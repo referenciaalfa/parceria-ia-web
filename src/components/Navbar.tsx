@@ -1,27 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  const handleScroll = () => {
-    if (window.scrollY > 10) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  };
+interface NavbarProps {
+  isScrolled: boolean;
+}
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+const Navbar = ({ isScrolled }: NavbarProps) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);

@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -7,13 +7,24 @@ import Portfolio from "@/components/Portfolio";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import AIChat from "@/components/AIChat";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const Index = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   // Scrollspy effect
   useEffect(() => {
     const handleScroll = () => {
       const sections = document.querySelectorAll('section[id]');
       const scrollY = window.pageYOffset;
+      
+      // Set isScrolled state for navbar transparency
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
       
       sections.forEach(section => {
         const sectionHeight = (section as HTMLElement).offsetHeight;
@@ -34,13 +45,15 @@ const Index = () => {
   
   return (
     <div className="min-h-screen overflow-x-hidden">
-      <Navbar />
+      <Navbar isScrolled={isScrolled} />
       <Hero />
       <Services />
       <Portfolio />
       <About />
       <Contact />
       <Footer />
+      <AIChat />
+      <WhatsAppButton />
       
       {/* Floating back to top button */}
       <button 

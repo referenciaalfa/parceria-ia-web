@@ -1,7 +1,15 @@
 
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Code, Brain, Zap, Database, Globe, Shield } from "lucide-react";
+import { 
+  Code, 
+  Brain, 
+  Zap, 
+  Calendar, 
+  MessageCircle, 
+  TrendingUp, 
+  Phone 
+} from "lucide-react";
 
 const ServiceCard = ({ 
   icon: Icon, 
@@ -36,51 +44,58 @@ const Services = () => {
             Nossas <span className="hero-text-gradient">Soluções</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Desenvolvemos tecnologias de IA personalizadas para atender às necessidades específicas do seu negócio.
+            Desenvolvemos tecnologias de IA personalizadas para atender às necessidades específicas do seu negócio e aprimorar sua presença digital.
           </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <ServiceCard 
-            icon={Brain} 
-            title="Inteligência Artificial" 
-            description="Soluções de IA personalizadas para análise de dados, reconhecimento de padrões e tomada de decisões."
-            variant="ai"
+            icon={Code} 
+            title="Automação de Processos" 
+            description="Automatize tarefas repetitivas e fluxos de trabalho para aumentar a eficiência operacional da sua empresa."
+            variant="automation"
           />
           
           <ServiceCard 
-            icon={Code} 
-            title="Automação de Processos" 
-            description="Automatize tarefas repetitivas e fluxos de trabalho para aumentar a eficiência operacional."
-            variant="automation"
+            icon={Calendar} 
+            title="Geração e Agendamento de Conteúdo" 
+            description="Crie e programe conteúdo com IA mantendo sua identidade e estilo autoral único."
+            variant="solutions"
+          />
+          
+          <ServiceCard 
+            icon={Brain} 
+            title="Soluções Personalizadas de IA" 
+            description="Desenvolvemos soluções de IA sob medida para resolver desafios específicos do seu negócio."
+            variant="ai"
           />
           
           <ServiceCard 
             icon={Zap} 
-            title="Chatbots Inteligentes" 
-            description="Assistentes virtuais com IA para atendimento ao cliente e suporte técnico 24/7."
+            title="Consultoria para Criadores" 
+            description="Orientação especializada para criadores e marcas que desejam integrar IA em seus processos criativos."
             variant="solutions"
           />
           
           <ServiceCard 
-            icon={Database} 
-            title="Análise Preditiva" 
-            description="Utilize dados históricos e algoritmos avançados para prever tendências e comportamentos futuros."
-            variant="ai"
-          />
-          
-          <ServiceCard 
-            icon={Globe} 
-            title="Soluções em Nuvem" 
-            description="Infraestrutura escalável em nuvem para hospedar suas aplicações de IA com alta disponibilidade."
+            icon={MessageCircle} 
+            title="Respostas Automáticas" 
+            description="Sistemas inteligentes de resposta para interação com seu público nas redes sociais, 24 horas por dia."
             variant="automation"
           />
           
           <ServiceCard 
-            icon={Shield} 
-            title="Segurança Inteligente" 
-            description="Sistemas de segurança baseados em IA para detecção de ameaças e prevenção de fraudes."
-            variant="solutions"
+            icon={TrendingUp} 
+            title="Análise de Tendências" 
+            description="Monitore tendências de mercado e obtenha insights valiosos para direcionar sua estratégia de negócios."
+            variant="ai"
+          />
+          
+          <ServiceCard 
+            icon={Phone} 
+            title="Integração de Canais" 
+            description="Conecte WhatsApp, Telegram, E-mail e TikTok com soluções de IA para uma presença digital integrada."
+            variant="automation"
           />
         </div>
       </div>
