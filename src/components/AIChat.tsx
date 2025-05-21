@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Brain, X, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 const AIChat = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,35 +14,81 @@ const AIChat = () => {
       text: 'Olá! Sou o assistente virtual da Parceria com IA. Como posso ajudar você hoje?'
     }
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // The webhook URL for the AI agent
+  const WEBHOOK_URL = "https://nwh.parceriacomia.com.br/webhook/Agenteparceriacomia";
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!message.trim()) return;
     
     // Add user message to conversation
-    setConversation([
-      ...conversation, 
+    setConversation(prev => [
+      ...prev, 
       { 
         sender: 'user',
         text: message 
       }
     ]);
     
+    const userMessage = message;
+    
     // Clear input
     setMessage('');
+    setIsLoading(true);
     
-    // Simulate bot response
-    setTimeout(() => {
-      // This would be replaced with an actual API call to n8n
+    try {
+      // Send message to webhook
+      const response = await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          timestamp: new Date().toISOString(),
+          source: window.location.href
+        }),
+      });
+      
+      let botResponse = "Obrigado pelo seu interesse em nossos serviços! Estou encaminhando sua mensagem para a nossa equipe.";
+      
+      // Try to get response from webhook
+      try {
+        const data = await response.json();
+        if (data && data.response) {
+          botResponse = data.response;
+        }
+      } catch (error) {
+        console.log("Could not parse webhook response, using default message");
+      }
+      
+      // Add bot response to conversation
       setConversation(prev => [
         ...prev,
         {
           sender: 'bot',
-          text: 'Obrigado pelo seu interesse em nossos serviços! Estou encaminhando sua mensagem para a nossa equipe. Podemos ajudar com soluções de IA para sua empresa ou projetos pessoais. Deseja uma demonstração de algum serviço específico?'
+          text: botResponse
         }
       ]);
-    }, 1000);
+    } catch (error) {
+      console.error("Error sending message to webhook:", error);
+      
+      // Add fallback response if webhook fails
+      setConversation(prev => [
+        ...prev,
+        {
+          sender: 'bot',
+          text: 'Desculpe, estou enfrentando problemas para me conectar. Por favor, tente novamente mais tarde ou entre em contato pelo WhatsApp.'
+        }
+      ]);
+      
+      toast.error("Erro ao conectar com o serviço de chat. Tente novamente mais tarde.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,6 +135,15 @@ const AIChat = () => {
                 </div>
               </div>
             ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-gray-100 text-gray-800 p-3 rounded-lg flex items-center space-x-1">
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></span>
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>
+                  <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" style={{ animationDelay: "0.4s" }}></span>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Input */}
@@ -97,8 +153,9 @@ const AIChat = () => {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Digite sua mensagem..."
               className="flex-1"
+              disabled={isLoading}
             />
-            <Button type="submit" size="icon" className="bg-ai-purple hover:bg-ai-blue">
+            <Button type="submit" size="icon" className="bg-ai-purple hover:bg-ai-blue" disabled={isLoading}>
               <Send className="h-4 w-4" />
             </Button>
           </form>
