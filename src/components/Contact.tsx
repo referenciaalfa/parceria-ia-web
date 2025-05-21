@@ -151,21 +151,21 @@ const Contact = () => {
                   <Mail className="h-6 w-6 text-ai-purple mt-1" />
                   <div>
                     <p className="text-sm font-medium">Email</p>
-                    <p className="text-gray-600">contato@parceriacomia.com</p>
+                    <p className="text-gray-600">parceriacomia@gmail.com</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
                   <Phone className="h-6 w-6 text-ai-purple mt-1" />
                   <div>
                     <p className="text-sm font-medium">Telefone</p>
-                    <p className="text-gray-600">+55 (11) 99999-9999</p>
+                    <p className="text-gray-600">+55 12 98130-1666</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-4">
                   <MapPin className="h-6 w-6 text-ai-purple mt-1" />
                   <div>
                     <p className="text-sm font-medium">Endereço</p>
-                    <p className="text-gray-600">Av. Paulista, 1000<br />São Paulo, SP</p>
+                    <p className="text-gray-600">Guarulhos, SP</p>
                   </div>
                 </div>
               </div>
