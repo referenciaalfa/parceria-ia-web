@@ -10,7 +10,7 @@ const About = () => {
             <div className="relative">
               <div className="w-full h-80 md:h-[500px] bg-gradient-to-r from-ai-blue/10 to-ai-purple/10 rounded-2xl"></div>
               <img 
-                src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                src="/lovable-uploads/09d9586e-476b-4f18-b5d0-c52036ce795d.png" 
                 alt="Equipe Parceria Com IA" 
                 className="absolute inset-0 w-full h-full object-cover rounded-2xl shadow-xl"
               />

@@ -61,7 +61,7 @@ const Portfolio = () => {
       title: "Automação de Atendimento ao Cliente",
       client: "Setor de Varejo",
       description: "Implementamos um sistema de chatbot com IA para uma grande rede de varejo, automatizando atendimentos e reduzindo o tempo de resposta.",
-      image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80",
+      image: "/lovable-uploads/339ab89f-5f43-4355-90da-089dfde555c0.png",
       results: [
         { label: "Redução no tempo de resposta", value: "78%" },
         { label: "Aumento na satisfação do cliente", value: "42%" },
@@ -73,7 +73,7 @@ const Portfolio = () => {
       title: "Análise Preditiva para Manutenção",
       client: "Setor Industrial",
       description: "Desenvolvemos um sistema de manutenção preditiva utilizando IA para uma indústria, prevendo falhas em equipamentos antes que ocorressem.",
-      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
+      image: "/lovable-uploads/fda26d1c-2b9d-4e98-8234-f0ccbf12b37b.png",
       results: [
         { label: "Redução em tempo de inatividade", value: "63%" },
         { label: "Economia em custos de manutenção", value: "R$1.2M" },
@@ -85,7 +85,7 @@ const Portfolio = () => {
       title: "Sistema de Recomendação Inteligente",
       client: "E-commerce",
       description: "Criamos um sistema de recomendação personalizada para uma plataforma de e-commerce, aumentando significativamente as vendas cruzadas.",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80",
+      image: "/lovable-uploads/339ab89f-5f43-4355-90da-089dfde555c0.png",
       results: [
         { label: "Aumento em vendas cruzadas", value: "47%" },
         { label: "Melhoria na retenção de usuários", value: "32%" },

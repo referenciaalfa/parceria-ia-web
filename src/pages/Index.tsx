@@ -46,6 +46,13 @@ const Index = () => {
   return (
     <div className="min-h-screen overflow-x-hidden">
       <Navbar isScrolled={isScrolled} />
+      <div className="fixed top-4 left-4 z-50 w-40">
+        <img 
+          src="/lovable-uploads/fda26d1c-2b9d-4e98-8234-f0ccbf12b37b.png" 
+          alt="Parceria Com IA Logo" 
+          className="w-full"
+        />
+      </div>
       <Hero />
       <Services />
       <Portfolio />

@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
-import { Brain, X, Send } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const AIChat = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -191,7 +192,10 @@ const AIChat = () => {
         aria-label="Abrir chat com IA"
         style={{ display: isOpen ? 'none' : 'flex' }}
       >
-        <Brain className="h-6 w-6" />
+        <Avatar>
+          <AvatarImage src="/lovable-uploads/56c2d0ac-ab8c-44c8-9a63-77e66e662d2b.png" alt="IA Assistant" />
+          <AvatarFallback>IA</AvatarFallback>
+        </Avatar>
       </button>
       
       {/* Chat window */}
@@ -200,7 +204,10 @@ const AIChat = () => {
           {/* Header */}
           <div className="bg-gradient-to-r from-ai-blue to-ai-purple p-4 flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <Brain className="h-5 w-5 text-white" />
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/lovable-uploads/56c2d0ac-ab8c-44c8-9a63-77e66e662d2b.png" alt="IA Assistant" />
+                <AvatarFallback>IA</AvatarFallback>
+              </Avatar>
               <h3 className="font-medium text-white">Assistente IA</h3>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-200">
@@ -215,6 +222,12 @@ const AIChat = () => {
                 key={index} 
                 className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
+                {msg.sender === 'bot' && (
+                  <Avatar className="h-8 w-8 mr-2 mt-2">
+                    <AvatarImage src="/lovable-uploads/56c2d0ac-ab8c-44c8-9a63-77e66e662d2b.png" alt="IA Assistant" />
+                    <AvatarFallback>IA</AvatarFallback>
+                  </Avatar>
+                )}
                 <div 
                   className={`max-w-xs p-3 rounded-lg ${
                     msg.sender === 'user' 
@@ -228,6 +241,10 @@ const AIChat = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
+                <Avatar className="h-8 w-8 mr-2">
+                  <AvatarImage src="/lovable-uploads/56c2d0ac-ab8c-44c8-9a63-77e66e662d2b.png" alt="IA Assistant" />
+                  <AvatarFallback>IA</AvatarFallback>
+                </Avatar>
                 <div className="bg-gray-100 text-gray-800 p-3 rounded-lg flex items-center space-x-1">
                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></span>
                   <span className="w-2 h-2 bg-gray-500 rounded-full animate-pulse" style={{ animationDelay: "0.2s" }}></span>

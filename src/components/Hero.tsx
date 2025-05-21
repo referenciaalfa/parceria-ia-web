@@ -48,7 +48,7 @@ const Hero = () => {
               <div className="w-72 h-72 md:w-96 md:h-96 rounded-full bg-gradient-to-r from-ai-blue/20 to-ai-purple/20 blur-3xl absolute -z-10"></div>
               <div className="w-full max-w-lg overflow-hidden rounded-2xl glass-card p-2 animate-float">
                 <img 
-                  src="https://pplx-res.cloudinary.com/image/private/user_uploads/39880012/xmhhDCQasrVTGad/baner-do-canal-IA-jpg.jpg"
+                  src="/lovable-uploads/8d60a238-3baa-4943-a7ab-9a308840ed12.png"
                   alt="Parceria com IA Banner" 
                   className="w-full h-full object-cover rounded-xl"
                 />
