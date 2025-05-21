@@ -27,6 +27,27 @@ const AIChat = () => {
     }
   }, [conversation]);
 
+  // Helper function to extract response text from webhook data
+  const extractResponseText = (data: any): string | null => {
+    if (!data) return null;
+    
+    // Handle array response format
+    if (Array.isArray(data) && data.length > 0) {
+      const firstItem = data[0];
+      if (firstItem.output) return firstItem.output;
+      if (firstItem.response) return firstItem.response;
+      if (firstItem.message && firstItem.message !== "Workflow was started") return firstItem.message;
+      return null;
+    }
+    
+    // Handle object response format
+    if (data.output) return data.output;
+    if (data.response) return data.response;
+    if (data.message && data.message !== "Workflow was started") return data.message;
+    
+    return null;
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -64,54 +85,77 @@ const AIChat = () => {
       const data = await response.json();
       console.log("Webhook response:", data);
       
-      let botResponse = "Obrigado pelo seu interesse em nossos serviços! Estou encaminhando sua mensagem para a nossa equipe.";
+      // Extract response text using helper function
+      const botResponseText = extractResponseText(data);
       
-      // Verifica os diferentes formatos de resposta possíveis
-      if (data) {
-        if (data.output) {
-          botResponse = data.output;
-        } else if (data.response) {
-          botResponse = data.response;
-        } else if (data.message && data.message !== "Workflow was started") {
-          botResponse = data.message;
-        } else {
-          // Aguarda um curto período para receber a resposta assincrona
-          setTimeout(async () => {
-            try {
-              const checkResponse = await fetch(WEBHOOK_URL, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  check_status: true,
-                  original_message: userMessage,
-                  timestamp: new Date().toISOString(),
-                }),
-              });
-              
-              const checkData = await checkResponse.json();
-              console.log("Check status response:", checkData);
-              
-              if (checkData && (checkData.output || checkData.response)) {
-                const finalResponse = checkData.output || checkData.response;
-                setConversation(prev => [
-                  ...prev,
-                  {
-                    sender: 'bot',
-                    text: finalResponse
-                  }
-                ]);
-              }
-            } catch (error) {
-              console.log("Error checking status:", error);
+      // Default message if no valid response is found
+      let botResponse = botResponseText || "Obrigado pelo seu interesse em nossos serviços! Estou encaminhando sua mensagem para a nossa equipe.";
+      
+      // If we don't have an immediate response or got "Workflow was started", check status after a delay
+      if (!botResponseText || (Array.isArray(data) && data.length === 0)) {
+        // Add a temporary message if needed
+        if (!botResponseText) {
+          setConversation(prev => [
+            ...prev,
+            {
+              sender: 'bot',
+              text: "Processando sua mensagem..."
             }
-          }, 2000);
+          ]);
         }
-      }
-      
-      // Add bot response to conversation if we have something immediately
-      if (botResponse && botResponse !== "Workflow was started") {
+        
+        // Check for asynchronous response after delay
+        setTimeout(async () => {
+          try {
+            const checkResponse = await fetch(WEBHOOK_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                check_status: true,
+                original_message: userMessage,
+                timestamp: new Date().toISOString(),
+              }),
+            });
+            
+            const checkData = await checkResponse.json();
+            console.log("Check status response:", checkData);
+            
+            // Extract response from check status
+            const finalResponseText = extractResponseText(checkData);
+            
+            if (finalResponseText) {
+              // Replace temporary message if it exists, otherwise add new message
+              setConversation(prev => {
+                const lastMsg = prev[prev.length - 1];
+                if (lastMsg.sender === 'bot' && lastMsg.text === "Processando sua mensagem...") {
+                  // Replace the temporary message
+                  const newConversation = [...prev];
+                  newConversation[prev.length - 1] = {
+                    sender: 'bot',
+                    text: finalResponseText
+                  };
+                  return newConversation;
+                } else {
+                  // Add as a new message
+                  return [
+                    ...prev,
+                    {
+                      sender: 'bot',
+                      text: finalResponseText
+                    }
+                  ];
+                }
+              });
+            }
+          } catch (error) {
+            console.error("Error checking status:", error);
+            toast.error("Erro ao verificar resposta do assistente.");
+          }
+        }, 2000);
+      } else if (botResponse) {
+        // If we have an immediate valid response, add it to the conversation
         setConversation(prev => [
           ...prev,
           {
