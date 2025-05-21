@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Brain, X, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,17 @@ const AIChat = () => {
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // The webhook URL for the AI agent
   const WEBHOOK_URL = "https://nwh.parceriacomia.com.br/webhook/Agenteparceriacomia";
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [conversation]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,26 +61,65 @@ const AIChat = () => {
         }),
       });
       
+      const data = await response.json();
+      console.log("Webhook response:", data);
+      
       let botResponse = "Obrigado pelo seu interesse em nossos serviços! Estou encaminhando sua mensagem para a nossa equipe.";
       
-      // Try to get response from webhook
-      try {
-        const data = await response.json();
-        if (data && data.response) {
+      // Verifica os diferentes formatos de resposta possíveis
+      if (data) {
+        if (data.output) {
+          botResponse = data.output;
+        } else if (data.response) {
           botResponse = data.response;
+        } else if (data.message && data.message !== "Workflow was started") {
+          botResponse = data.message;
+        } else {
+          // Aguarda um curto período para receber a resposta assincrona
+          setTimeout(async () => {
+            try {
+              const checkResponse = await fetch(WEBHOOK_URL, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  check_status: true,
+                  original_message: userMessage,
+                  timestamp: new Date().toISOString(),
+                }),
+              });
+              
+              const checkData = await checkResponse.json();
+              console.log("Check status response:", checkData);
+              
+              if (checkData && (checkData.output || checkData.response)) {
+                const finalResponse = checkData.output || checkData.response;
+                setConversation(prev => [
+                  ...prev,
+                  {
+                    sender: 'bot',
+                    text: finalResponse
+                  }
+                ]);
+              }
+            } catch (error) {
+              console.log("Error checking status:", error);
+            }
+          }, 2000);
         }
-      } catch (error) {
-        console.log("Could not parse webhook response, using default message");
       }
       
-      // Add bot response to conversation
-      setConversation(prev => [
-        ...prev,
-        {
-          sender: 'bot',
-          text: botResponse
-        }
-      ]);
+      // Add bot response to conversation if we have something immediately
+      if (botResponse && botResponse !== "Workflow was started") {
+        setConversation(prev => [
+          ...prev,
+          {
+            sender: 'bot',
+            text: botResponse
+          }
+        ]);
+      }
     } catch (error) {
       console.error("Error sending message to webhook:", error);
       
@@ -144,6 +191,7 @@ const AIChat = () => {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
           
           {/* Input */}
