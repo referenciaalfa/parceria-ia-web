@@ -1,14 +1,28 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { cn } from "@/lib/utils";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+interface VideoData {
+  id: string;
+  title: string;
+}
 
 interface CaseStudyProps {
   title: string;
   client: string;
   description: string;
   image?: string;
-  video?: string;
+  videos?: VideoData[];
   results: { label: string; value: string }[];
   index: number;
 }
@@ -18,25 +32,56 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
   client, 
   description, 
   image, 
-  video,
+  videos,
   results,
   index
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
-    // Attempt to play video after user interaction
+    // Initialize refs array based on videos length
+    if (videos?.length) {
+      videoRefs.current = videoRefs.current.slice(0, videos.length);
+    }
+  }, [videos]);
+
+  useEffect(() => {
+    // Attempt to play videos after user interaction
     const handleUserInteraction = () => {
-      if (videoRef.current) {
-        videoRef.current.play().catch(error => {
+      if (videos && videoRefs.current[currentVideoIndex]) {
+        videoRefs.current[currentVideoIndex]?.play().catch(error => {
           console.log("Video autoplay prevented:", error);
         });
       }
     };
     
     window.addEventListener('scroll', handleUserInteraction, { once: true });
-    return () => window.removeEventListener('scroll', handleUserInteraction);
-  }, []);
+    window.addEventListener('click', handleUserInteraction, { once: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleUserInteraction);
+      window.removeEventListener('click', handleUserInteraction);
+    };
+  }, [currentVideoIndex, videos]);
+
+  const handleSlideChange = (index: number) => {
+    setCurrentVideoIndex(index);
+    
+    // Pause all videos
+    videoRefs.current.forEach((videoRef) => {
+      if (videoRef) {
+        videoRef.pause();
+      }
+    });
+    
+    // Play the current video
+    if (videoRefs.current[index]) {
+      videoRefs.current[index]?.play().catch(error => {
+        console.log("Video play prevented:", error);
+      });
+    }
+  };
 
   return (
     <div className={cn(
@@ -44,26 +89,45 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
       index % 2 !== 0 ? "md:flex-row-reverse" : ""
     )}>
       <div className="md:w-1/2">
-        {video ? (
+        {videos && videos.length > 0 ? (
           <div className="digital-screen">
-            <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl hover-lift overflow-hidden">
-              <div className="screen-bezel bg-black rounded-lg p-3 relative">
-                <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
-                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20 animate-blink"></div>
-                <AspectRatio ratio={16 / 9}>
-                  <video 
-                    ref={videoRef}
-                    className="w-full h-full object-cover rounded"
-                    src="https://drive.google.com/uc?export=download&id=1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS"
-                    loop
-                    muted
-                    playsInline
-                    preload="auto"
-                    controls
-                  />
-                </AspectRatio>
+            <Carousel 
+              className="w-full"
+              onSelect={(selectedIndex) => handleSlideChange(selectedIndex)}
+            >
+              <CarouselContent>
+                {videos.map((video, idx) => (
+                  <CarouselItem key={video.id}>
+                    <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl hover-lift overflow-hidden">
+                      <div className="screen-bezel bg-black rounded-lg p-3 relative">
+                        <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
+                        <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20 animate-blink"></div>
+                        <p className="text-xs text-gray-400 absolute top-2 left-2">{video.title}</p>
+                        <AspectRatio ratio={16 / 9}>
+                          <video 
+                            ref={el => videoRefs.current[idx] = el}
+                            className="w-full h-full object-cover rounded"
+                            src={`https://drive.google.com/uc?export=download&id=${video.id}`}
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                            controls
+                          />
+                        </AspectRatio>
+                      </div>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <CarouselPrevious className="static transform-none" />
+                <div className="text-sm text-muted-foreground">
+                  {currentVideoIndex + 1} / {videos.length}
+                </div>
+                <CarouselNext className="static transform-none" />
               </div>
-            </div>
+            </Carousel>
           </div>
         ) : image ? (
           <div className="glass-card overflow-hidden p-2 hover-lift">
@@ -103,7 +167,10 @@ const Portfolio = () => {
       title: "Automação de Atendimento ao Cliente",
       client: "Setor de Varejo",
       description: "Implementamos um sistema de chatbot com IA para uma grande rede de varejo, automatizando atendimentos e reduzindo o tempo de resposta.",
-      video: "https://drive.google.com/uc?export=download&id=1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS",
+      videos: [
+        { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Demo do Chatbot IA" },
+        { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Resultados do Cliente" }
+      ],
       results: [
         { label: "Redução no tempo de resposta", value: "78%" },
         { label: "Aumento na satisfação do cliente", value: "42%" },
