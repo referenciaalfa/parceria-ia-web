@@ -1,12 +1,14 @@
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { cn } from "@/lib/utils";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 interface CaseStudyProps {
   title: string;
   client: string;
   description: string;
-  image: string;
+  image?: string;
+  video?: string;
   results: { label: string; value: string }[];
   index: number;
 }
@@ -16,22 +18,62 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
   client, 
   description, 
   image, 
+  video,
   results,
   index
 }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    // Attempt to play video after user interaction
+    const handleUserInteraction = () => {
+      if (videoRef.current) {
+        videoRef.current.play().catch(error => {
+          console.log("Video autoplay prevented:", error);
+        });
+      }
+    };
+    
+    window.addEventListener('scroll', handleUserInteraction, { once: true });
+    return () => window.removeEventListener('scroll', handleUserInteraction);
+  }, []);
+
   return (
     <div className={cn(
       "flex flex-col md:flex-row items-center gap-8 py-12",
       index % 2 !== 0 ? "md:flex-row-reverse" : ""
     )}>
       <div className="md:w-1/2">
-        <div className="glass-card overflow-hidden p-2 hover-lift">
-          <img 
-            src={image} 
-            alt={title} 
-            className="w-full h-64 md:h-80 object-cover rounded-lg"
-          />
-        </div>
+        {video ? (
+          <div className="digital-screen">
+            <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl hover-lift overflow-hidden">
+              <div className="screen-bezel bg-black rounded-lg p-3 relative">
+                <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
+                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20"></div>
+                <AspectRatio ratio={16 / 9}>
+                  <video 
+                    ref={videoRef}
+                    className="w-full h-full object-cover rounded"
+                    src={video}
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    controls
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+          </div>
+        ) : image ? (
+          <div className="glass-card overflow-hidden p-2 hover-lift">
+            <img 
+              src={image} 
+              alt={title} 
+              className="w-full h-64 md:h-80 object-cover rounded-lg"
+            />
+          </div>
+        ) : null}
       </div>
       
       <div className="md:w-1/2 space-y-4">
@@ -61,7 +103,7 @@ const Portfolio = () => {
       title: "Automação de Atendimento ao Cliente",
       client: "Setor de Varejo",
       description: "Implementamos um sistema de chatbot com IA para uma grande rede de varejo, automatizando atendimentos e reduzindo o tempo de resposta.",
-      image: "/lovable-uploads/339ab89f-5f43-4355-90da-089dfde555c0.png",
+      video: "https://drive.google.com/uc?export=download&id=1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS",
       results: [
         { label: "Redução no tempo de resposta", value: "78%" },
         { label: "Aumento na satisfação do cliente", value: "42%" },

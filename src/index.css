@@ -85,4 +85,25 @@
   .service-card-solutions {
     @apply border-t-ai-turquoise;
   }
+  
+  /* Digital screen styling */
+  .digital-screen {
+    @apply w-full;
+  }
+  
+  .digital-screen-frame {
+    @apply transition-all duration-300;
+  }
+  
+  .screen-bezel {
+    @apply border border-gray-700;
+  }
+  
+  .screen-reflection {
+    @apply opacity-30;
+  }
+  
+  .shadow-glow-red {
+    @apply shadow-[0_0_5px_2px_rgba(255,0,0,0.5)];
+  }
 }

@@ -112,6 +112,10 @@ export default {
 				'shimmer': {
 					'0%': { backgroundPosition: '-200% 0' },
 					'100%': { backgroundPosition: '200% 0' }
+				},
+				'blink': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.3' }
 				}
 			},
 			animation: {
@@ -120,7 +124,8 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
 				'gradient-x': 'gradient-x 10s ease infinite',
-				'shimmer': 'shimmer 2s linear infinite'
+				'shimmer': 'shimmer 2s linear infinite',
+				'blink': 'blink 2s ease-in-out infinite',
 			},
 			backgroundImage: {
 				'hero-pattern': 'radial-gradient(circle at 10% 10%, rgba(107, 70, 193, 0.4) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(11, 197, 234, 0.4) 0%, transparent 40%)',
