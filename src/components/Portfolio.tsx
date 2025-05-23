@@ -65,6 +65,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
     };
   }, [currentVideoIndex, videos]);
 
+  // Corrigindo a função handleSlideChange para aceitar números como argumento
   const handleSlideChange = (index: number) => {
     setCurrentVideoIndex(index);
     
@@ -93,7 +94,11 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
           <div className="digital-screen">
             <Carousel 
               className="w-full"
-              onSelect={(selectedIndex) => handleSlideChange(selectedIndex)}
+              opts={{
+                align: "start",
+                loop: true
+              }}
+              onSelect={handleSlideChange}
             >
               <CarouselContent>
                 {videos.map((video, idx) => (
@@ -169,7 +174,9 @@ const Portfolio = () => {
       description: "Implementamos um sistema de chatbot com IA para uma grande rede de varejo, automatizando atendimentos e reduzindo o tempo de resposta.",
       videos: [
         { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Demo do Chatbot IA" },
-        { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Resultados do Cliente" }
+        { id: "1Lw6t2t_U4QiIQFarGKguCYuNgNt7Kico", title: "Resultados do Cliente" },
+        { id: "1S9bXiVwkL7URfrFWMuzLo_afP-gYFXzi", title: "Análise de Casos" },
+        { id: "1Lqv6jhv1TciieAeYfmGGwTUZ1DjEuFsA", title: "Benefícios do Sistema" }
       ],
       results: [
         { label: "Redução no tempo de resposta", value: "78%" },
@@ -182,7 +189,11 @@ const Portfolio = () => {
       title: "Análise Preditiva para Manutenção",
       client: "Setor Industrial",
       description: "Desenvolvemos um sistema de manutenção preditiva utilizando IA para uma indústria, prevendo falhas em equipamentos antes que ocorressem.",
-      image: "/lovable-uploads/fda26d1c-2b9d-4e98-8234-f0ccbf12b37b.png",
+      videos: [
+        { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Sistema em Ação" },
+        { id: "1Lw6t2t_U4QiIQFarGKguCYuNgNt7Kico", title: "Análise de Dados" },
+        { id: "1S9bXiVwkL7URfrFWMuzLo_afP-gYFXzi", title: "Economia Gerada" }
+      ],
       results: [
         { label: "Redução em tempo de inatividade", value: "63%" },
         { label: "Economia em custos de manutenção", value: "R$1.2M" },
@@ -194,7 +205,10 @@ const Portfolio = () => {
       title: "Sistema de Recomendação Inteligente",
       client: "E-commerce",
       description: "Criamos um sistema de recomendação personalizada para uma plataforma de e-commerce, aumentando significativamente as vendas cruzadas.",
-      image: "/lovable-uploads/339ab89f-5f43-4355-90da-089dfde555c0.png",
+      videos: [
+        { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Interface do Sistema" },
+        { id: "1Lw6t2t_U4QiIQFarGKguCYuNgNt7Kico", title: "Performance de Vendas" }
+      ],
       results: [
         { label: "Aumento em vendas cruzadas", value: "47%" },
         { label: "Melhoria na retenção de usuários", value: "32%" },
