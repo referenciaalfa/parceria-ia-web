@@ -49,12 +49,12 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
             <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl hover-lift overflow-hidden">
               <div className="screen-bezel bg-black rounded-lg p-3 relative">
                 <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
-                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20"></div>
+                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20 animate-blink"></div>
                 <AspectRatio ratio={16 / 9}>
                   <video 
                     ref={videoRef}
                     className="w-full h-full object-cover rounded"
-                    src={video}
+                    src="https://drive.google.com/uc?export=download&id=1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS"
                     loop
                     muted
                     playsInline
