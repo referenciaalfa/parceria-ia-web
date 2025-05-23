@@ -22,17 +22,73 @@ const Contact = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateEmail = (email: string) => {
+    return String(email)
+      .toLowerCase()
+      .match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form
+    if (!formData.name.trim()) {
+      toast({
+        title: "Erro no formulário",
+        description: "Por favor, informe seu nome",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      toast({
+        title: "Erro no formulário",
+        description: "Por favor, informe um email válido",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.message.trim()) {
+      toast({
+        title: "Erro no formulário",
+        description: "Por favor, escreva uma mensagem",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
     
-    // Simulando envio
-    setTimeout(() => {
+    // Email configuration using EmailJS (public client side approach)
+    const emailData = {
+      service_id: 'service_id', // Replace with your EmailJS service ID
+      template_id: 'template_id', // Replace with your EmailJS template ID
+      user_id: 'public_key', // Replace with your EmailJS public key
+      template_params: {
+        from_name: formData.name,
+        reply_to: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        message: formData.message,
+      }
+    };
+
+    try {
+      // For demo purposes, we're simulating a successful email sending
+      // In a real scenario, you would use EmailJS API or similar service
+      console.log('Sending email data:', emailData);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       toast({
         title: "Mensagem enviada com sucesso!",
         description: "Entraremos em contato em breve.",
       });
-      setLoading(false);
+      
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -40,7 +96,16 @@ const Contact = () => {
         company: '',
         message: ''
       });
-    }, 1500);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Erro ao enviar mensagem",
+        description: "Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

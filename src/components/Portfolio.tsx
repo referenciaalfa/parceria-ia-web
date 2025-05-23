@@ -38,6 +38,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
 }) => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [api, setApi] = useState<any>(null);
 
   useEffect(() => {
     // Initialize refs array based on videos length
@@ -45,6 +46,13 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
       videoRefs.current = videoRefs.current.slice(0, videos.length);
     }
   }, [videos]);
+
+  useEffect(() => {
+    // When API or current index changes, update the current video
+    if (api && videos && videos.length > 0) {
+      api.scrollTo(currentVideoIndex);
+    }
+  }, [api, currentVideoIndex, videos]);
 
   useEffect(() => {
     // Attempt to play videos after user interaction
@@ -65,8 +73,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
     };
   }, [currentVideoIndex, videos]);
 
-  // Corrigindo a função handleSlideChange para aceitar números como argumento
-  const handleSlideChange = (index: number) => {
+  const handleVideoChange = React.useCallback((index: number) => {
     setCurrentVideoIndex(index);
     
     // Pause all videos
@@ -82,7 +89,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
         console.log("Video play prevented:", error);
       });
     }
-  };
+  }, []);
 
   return (
     <div className={cn(
@@ -98,7 +105,10 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                 align: "start",
                 loop: true
               }}
-              onSelect={handleSlideChange}
+              setApi={setApi}
+              onSelect={(_, selectedIndex) => {
+                handleVideoChange(selectedIndex);
+              }}
             >
               <CarouselContent>
                 {videos.map((video, idx) => (
@@ -112,7 +122,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                           <video 
                             ref={el => videoRefs.current[idx] = el}
                             className="w-full h-full object-cover rounded"
-                            src={`https://drive.google.com/uc?export=download&id=${video.id}`}
+                            src={`https://drive.google.com/uc?export=view&id=${video.id}`}
                             loop
                             muted
                             playsInline
