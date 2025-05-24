@@ -11,10 +11,12 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface VideoData {
   id: string;
   title: string;
+  url?: string;
 }
 
 interface CaseStudyProps {
@@ -106,9 +108,6 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                 loop: true
               }}
               setApi={setApi}
-              onSelect={(_, selectedIndex) => {
-                handleVideoChange(selectedIndex);
-              }}
             >
               <CarouselContent>
                 {videos.map((video, idx) => (
@@ -122,7 +121,7 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                           <video 
                             ref={el => videoRefs.current[idx] = el}
                             className="w-full h-full object-cover rounded"
-                            src={`https://drive.google.com/uc?export=view&id=${video.id}`}
+                            src={video.url || `https://drive.google.com/uc?export=view&id=${video.id}`}
                             loop
                             muted
                             playsInline
@@ -136,11 +135,23 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                 ))}
               </CarouselContent>
               <div className="flex justify-center items-center gap-2 mt-4">
-                <CarouselPrevious className="static transform-none" />
+                <CarouselPrevious 
+                  className="static transform-none" 
+                  onClick={() => {
+                    const newIndex = currentVideoIndex > 0 ? currentVideoIndex - 1 : videos.length - 1;
+                    handleVideoChange(newIndex);
+                  }}
+                />
                 <div className="text-sm text-muted-foreground">
                   {currentVideoIndex + 1} / {videos.length}
                 </div>
-                <CarouselNext className="static transform-none" />
+                <CarouselNext 
+                  className="static transform-none"
+                  onClick={() => {
+                    const newIndex = currentVideoIndex < videos.length - 1 ? currentVideoIndex + 1 : 0;
+                    handleVideoChange(newIndex);
+                  }}
+                />
               </div>
             </Carousel>
           </div>
@@ -177,12 +188,45 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
 };
 
 const Portfolio = () => {
+  const { toast } = useToast();
+  const [dynamicVideos, setDynamicVideos] = useState<VideoData[]>([]);
+
+  // Webhook endpoint simulation for receiving videos from n8n
+  useEffect(() => {
+    const handleWebhookData = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'VIDEO_WEBHOOK') {
+        const { videoUrl, title, caseStudyIndex } = event.data;
+        
+        if (videoUrl && title !== undefined && caseStudyIndex !== undefined) {
+          const newVideo: VideoData = {
+            id: `webhook-${Date.now()}`,
+            title: title || 'Vídeo do N8N',
+            url: videoUrl
+          };
+          
+          setDynamicVideos(prev => [...prev, newVideo]);
+          
+          toast({
+            title: "Novo vídeo recebido",
+            description: `Vídeo "${newVideo.title}" foi adicionado com sucesso`,
+          });
+        }
+      }
+    };
+
+    window.addEventListener('message', handleWebhookData);
+    return () => window.removeEventListener('message', handleWebhookData);
+  }, [toast]);
+
   const caseStudies = [
     {
       title: "Automação de Atendimento ao Cliente",
       client: "Setor de Varejo",
       description: "Implementamos um sistema de chatbot com IA para uma grande rede de varejo, automatizando atendimentos e reduzindo o tempo de resposta.",
       videos: [
+        ...dynamicVideos,
         { id: "1pYaBWyY4Xl3L7DPOm3h3qY12NRpYWBJS", title: "Demo do Chatbot IA" },
         { id: "1Lw6t2t_U4QiIQFarGKguCYuNgNt7Kico", title: "Resultados do Cliente" },
         { id: "1S9bXiVwkL7URfrFWMuzLo_afP-gYFXzi", title: "Análise de Casos" },
