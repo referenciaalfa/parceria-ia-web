@@ -15,7 +15,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar isScrolled={false} />
+      <Navbar />
       <Hero />
       <About />
       <Services />
