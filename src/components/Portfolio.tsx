@@ -10,7 +10,11 @@ import {
   CarouselPrevious 
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useVideoWebhook } from "@/hooks/useVideoWebhook";
+import VideoDisplay from "./VideoDisplay";
+import WebhookConfig from "./WebhookConfig";
 
 interface VideoData {
   id: string;
@@ -177,6 +181,14 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
 };
 
 const Portfolio = () => {
+  const {
+    currentVideo,
+    webhookUrl,
+    isWebhookActive,
+    simulateWebhook,
+    stopVideo
+  } = useVideoWebhook();
+
   const caseStudies = [
     {
       title: "Automação de Atendimento ao Cliente",
@@ -239,16 +251,41 @@ const Portfolio = () => {
             Veja como nossas soluções de IA transformaram o desempenho de nossos clientes.
           </p>
         </div>
-        
-        <div className="space-y-16 md:space-y-24">
-          {caseStudies.map((caseStudy, index) => (
-            <CaseStudy 
-              key={index}
-              {...caseStudy}
-              index={index}
+
+        <Tabs defaultValue="cases" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="cases">Cases de Sucesso</TabsTrigger>
+            <TabsTrigger value="webhook">Webhook n8n</TabsTrigger>
+            <TabsTrigger value="monitor">Monitor de Vídeo</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="cases" className="mt-8">
+            <div className="space-y-16 md:space-y-24">
+              {caseStudies.map((caseStudy, index) => (
+                <CaseStudy 
+                  key={index}
+                  {...caseStudy}
+                  index={index}
+                />
+              ))}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="webhook" className="mt-8">
+            <WebhookConfig
+              webhookUrl={webhookUrl}
+              isActive={isWebhookActive}
+              onSimulateWebhook={simulateWebhook}
             />
-          ))}
-        </div>
+          </TabsContent>
+          
+          <TabsContent value="monitor" className="mt-8">
+            <VideoDisplay
+              video={currentVideo}
+              onStop={stopVideo}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </section>
   );
