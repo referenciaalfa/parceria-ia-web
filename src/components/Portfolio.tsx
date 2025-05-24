@@ -110,9 +110,6 @@ const CaseStudy: React.FC<CaseStudyProps> = ({
                 loop: true
               }}
               setApi={setApi}
-              onSelect={(_, selectedIndex) => {
-                handleVideoChange(selectedIndex);
-              }}
             >
               <CarouselContent>
                 {videos.map((video, idx) => (

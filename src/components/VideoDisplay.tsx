@@ -50,13 +50,47 @@ const VideoDisplay: React.FC<VideoDisplayProps> = ({ video, onStop }) => {
 
   if (!video) {
     return (
-      <Card className="w-full max-w-4xl mx-auto">
+      <Card className="w-full max-w-6xl mx-auto">
         <CardHeader>
           <CardTitle className="text-center">Monitor de Vídeo - n8n Webhook</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
-            <p className="text-gray-500">Aguardando vídeo do webhook...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Monitor 1 */}
+            <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl">
+              <div className="screen-bezel bg-black rounded-lg p-3 relative">
+                <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
+                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20 animate-blink"></div>
+                <p className="text-xs text-gray-400 absolute top-2 left-2 z-20">Monitor 1</p>
+                <AspectRatio ratio={16 / 9}>
+                  <img 
+                    src="/lovable-uploads/fda26d1c-2b9d-4e98-8234-f0ccbf12b37b.png" 
+                    alt="Monitor 1 - Parceria Com IA" 
+                    className="w-full h-full object-cover rounded"
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+
+            {/* Monitor 2 */}
+            <div className="digital-screen-frame p-2 bg-gray-800 rounded-xl shadow-2xl">
+              <div className="screen-bezel bg-black rounded-lg p-3 relative">
+                <div className="screen-reflection absolute inset-0 bg-gradient-to-br from-white/10 to-transparent z-10 pointer-events-none"></div>
+                <div className="indicator absolute top-2 right-2 size-2 rounded-full bg-red-500 shadow-glow-red z-20 animate-blink"></div>
+                <p className="text-xs text-gray-400 absolute top-2 left-2 z-20">Monitor 2</p>
+                <AspectRatio ratio={16 / 9}>
+                  <img 
+                    src="/lovable-uploads/8d60a238-3baa-4943-a7ab-9a308840ed12.png" 
+                    alt="Monitor 2 - AI Technology" 
+                    className="w-full h-full object-cover rounded"
+                  />
+                </AspectRatio>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-4 text-gray-500">
+            Aguardando vídeo do webhook...
           </div>
         </CardContent>
       </Card>
